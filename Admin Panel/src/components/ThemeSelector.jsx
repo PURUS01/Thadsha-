@@ -182,82 +182,134 @@ export default function ThemeSelector() {
   }
 
   return (
-    <div className="bg-slate-900/40 p-4 rounded max-h-[60vh] overflow-auto pr-2">
-      <h3 className="font-semibold mb-2">Theme Palette</h3>
+    <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+          <span className="w-1 h-6 bg-pink-500 rounded-full"></span>
+          Color Palettes
+        </h3>
+        <span className="text-xs text-slate-400 px-3 py-1 rounded-full bg-white/5 border border-white/5">
+          {editablePalettes.length} Presets
+        </span>
+      </div>
+
       {loading ? (
-        <div className="text-sm text-slate-300">Loading themes...</div>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+        </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {editablePalettes.map(p => (
-              <div
-                key={p.id}
-                className={`p-3 rounded w-full text-sm text-left border ${active===p.id? 'ring-2 ring-offset-2 ring-indigo-400 border-indigo-500' : 'border-transparent'} bg-slate-800/30`}
-              >
-                <div className="h-12 rounded overflow-hidden mb-2 flex items-stretch">
-                  <div className="flex-1 min-w-0" style={{ background: p.background }} />
-                  <div style={{ width: 56, background: p.primary }} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {editablePalettes.map(p => (
+            <div
+              key={p.id}
+              className={`relative group p-4 rounded-xl border transition-all duration-300 hover:shadow-lg ${active === p.id
+                ? 'bg-indigo-500/10 border-indigo-500/50 shadow-indigo-500/10'
+                : 'bg-slate-800/40 border-white/5 hover:border-white/10 hover:bg-slate-800/60'}`}
+            >
+              {/* Active Indicator Icon - Fixed Positioning */}
+              {active === p.id && (
+                <div className="absolute -top-2 -right-2 bg-emerald-500 text-white rounded-full p-1 shadow-lg shadow-emerald-500/20 z-10 scale-100 animate-fade-in">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
                 </div>
-                <div className="flex items-center justify-between gap-2">
-                  <div className="font-medium truncate">{p.label}</div>
-                  <div className="flex items-center gap-2">
-                    {p.editing && (
-                      <button onClick={() => resetPalette(p.id)} className="text-xs text-amber-200 px-2 py-0.5 rounded hover:bg-slate-800">Reset</button>
-                    )}
-                    <button onClick={() => toggleEdit(p.id)} className="text-xs text-slate-300 px-2 py-0.5 rounded hover:bg-slate-800">{p.editing ? 'Done' : 'Edit'}</button>
-                    {active === p.id && (
-                      <div className="absolute -top-2 -right-2 bg-emerald-500 text-xs px-2 py-0.5 rounded-full text-black font-semibold">✓</div>
-                    )}
-                  </div>
+              )}
+
+              {/* Color Preview */}
+              <div className="h-16 rounded-lg overflow-hidden mb-4 flex border border-white/5 shadow-inner relative">
+                <div className="flex-1 h-full" style={{ background: p.background }} title="Background" />
+                <div className="w-12 h-full" style={{ background: p.primary }} title="Primary" />
+                <div className="w-8 h-full" style={{ background: p.secondary }} title="Secondary" />
+                <div className="w-4 h-full" style={{ background: p.accent }} title="Accent" />
+              </div>
+
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <div className="font-semibold text-white text-sm">{p.label}</div>
+                  <div className="text-xs text-slate-400">{p.desc}</div>
                 </div>
-                <div className="text-xs text-slate-300 truncate">{p.desc}</div>
-
-                {p.editing && (
-                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                    <input value={p.label} onChange={e=>updatePaletteField(p.id,'label',e.target.value)} className="p-1 rounded bg-slate-700" placeholder="Label" />
-                    <input value={p.desc} onChange={e=>updatePaletteField(p.id,'desc',e.target.value)} className="p-1 rounded bg-slate-700" placeholder="Short description" />
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={p.background} onChange={e=>updatePaletteField(p.id,'background',e.target.value)} className="w-10 h-8 p-0" />
-                      <input value={p.background} onChange={e=>updatePaletteField(p.id,'background',e.target.value)} className="p-1 rounded bg-slate-700 flex-1" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={p.primary} onChange={e=>updatePaletteField(p.id,'primary',e.target.value)} className="w-10 h-8 p-0" />
-                      <input value={p.primary} onChange={e=>updatePaletteField(p.id,'primary',e.target.value)} className="p-1 rounded bg-slate-700 flex-1" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={p.secondary || '#ffffff'} onChange={e=>updatePaletteField(p.id,'secondary',e.target.value)} className="w-10 h-8 p-0" />
-                      <input value={p.secondary || ''} onChange={e=>updatePaletteField(p.id,'secondary',e.target.value)} className="p-1 rounded bg-slate-700 flex-1" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={p.accent || '#ffffff'} onChange={e=>updatePaletteField(p.id,'accent',e.target.value)} className="w-10 h-8 p-0" />
-                      <input value={p.accent || ''} onChange={e=>updatePaletteField(p.id,'accent',e.target.value)} className="p-1 rounded bg-slate-700 flex-1" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={p.text || '#000000'} onChange={e=>updatePaletteField(p.id,'text',e.target.value)} className="w-10 h-8 p-0" />
-                      <input value={p.text} onChange={e=>updatePaletteField(p.id,'text',e.target.value)} className="p-1 rounded bg-slate-700 flex-1" />
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-2">
-                  {active === p.id ? (
-                    <span className="inline-flex items-center gap-2 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500 text-black font-semibold">✓ Current</span>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => save(p.id)}
-                          className="inline-flex items-center gap-2 text-[11px] px-2 py-0.5 rounded-full bg-indigo-600 hover:bg-indigo-500"
-                          aria-pressed={false}
-                        >
-                          Set
-                        </button>
-                    </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleEdit(p.id); }}
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    title={p.editing ? "Done" : "Edit Colors"}
+                  >
+                    {p.editing ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    )}
+                  </button>
+                  {p.editing && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); resetPalette(p.id); }}
+                      className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-400/10 rounded-lg transition-colors"
+                      title="Reset details"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
                   )}
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="text-xs text-slate-400">Tip: Click a palette to apply and save it. When Firebase is configured the palette will be saved to Firestore and the portfolio can auto-sync.</div>
+
+              {/* Edit Mode */}
+              {p.editing ? (
+                <div className="mt-4 pt-4 border-t border-white/5 grid gap-3 animate-fade-in">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input value={p.label} onChange={e => updatePaletteField(p.id, 'label', e.target.value)} className="col-span-2 text-xs bg-slate-900/50 border border-white/10 rounded px-2 py-1.5 text-white focus:border-indigo-500 outline-none" placeholder="Label name" />
+                    <input value={p.desc} onChange={e => updatePaletteField(p.id, 'desc', e.target.value)} className="col-span-2 text-xs bg-slate-900/50 border border-white/10 rounded px-2 py-1.5 text-white focus:border-indigo-500 outline-none" placeholder="Description" />
+                  </div>
+
+                  <div className="space-y-2">
+                    {[
+                      { key: 'background', label: 'Bg' },
+                      { key: 'primary', label: 'Pri' },
+                      { key: 'secondary', label: 'Sec' },
+                      { key: 'accent', label: 'Acc' },
+                      { key: 'text', label: 'Txt' },
+                    ].map((color) => (
+                      <div key={color.key} className="flex items-center gap-2">
+                        <span className="text-[10px] w-6 text-slate-500 uppercase font-bold">{color.label}</span>
+                        <div className="relative flex-1 flex items-center bg-slate-900/50 rounded border border-white/10 p-1">
+                          <input
+                            type="color"
+                            value={p[color.key] || '#ffffff'}
+                            onChange={e => updatePaletteField(p.id, color.key, e.target.value)}
+                            className="w-6 h-6 rounded cursor-pointer border-none p-0 bg-transparent"
+                          />
+                          <input
+                            value={p[color.key] || ''}
+                            onChange={e => updatePaletteField(p.id, color.key, e.target.value)}
+                            className="flex-1 bg-transparent border-none text-xs text-slate-300 ml-2 focus:outline-none font-mono"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 pt-4 border-t border-white/5">
+                  <button
+                    onClick={() => save(p.id)}
+                    disabled={active === p.id}
+                    className={`w-full py-2 rounded-lg text-xs font-semibold transition-all duration-200 
+                       ${active === p.id
+                        ? 'bg-emerald-500/10 text-emerald-400 cursor-default border border-emerald-500/20'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'}`}
+                  >
+                    {active === p.id ? 'Active Theme' : 'Apply Theme'}
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

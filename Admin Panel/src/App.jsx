@@ -10,22 +10,22 @@ import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast'
 
-export default function App(){
-  React.useEffect(()=>{ console.log('App: mounted') },[])
+export default function App() {
+  React.useEffect(() => { console.log('App: mounted') }, [])
   return (
     <div>
-      <Toaster />
+      <Toaster toastOptions={{ duration: 2000, style: { background: '#334155', color: '#fff' } }} />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/login" element={<Login />} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
-        <Route path="/dashboard/profile" element={<ProtectedRoute><ProfileManager/></ProtectedRoute>} />
-        <Route path="/dashboard/skills" element={<ProtectedRoute><SkillsManager/></ProtectedRoute>} />
-        <Route path="/dashboard/projects" element={<ProtectedRoute><ProjectsManager/></ProtectedRoute>} />
-        <Route path="/dashboard/theme" element={<ProtectedRoute><ThemeManager/></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/profile" element={<ProtectedRoute><ProfileManager /></ProtectedRoute>} />
+        <Route path="/dashboard/skills" element={<ProtectedRoute><SkillsManager /></ProtectedRoute>} />
+        <Route path="/dashboard/projects" element={<ProtectedRoute><ProjectsManager /></ProtectedRoute>} />
+        <Route path="/dashboard/theme" element={<ProtectedRoute><ThemeManager /></ProtectedRoute>} />
 
-        <Route path="*" element={<NotFound/>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )

@@ -67,54 +67,93 @@ export default function DashboardOverview() {
   }, [])
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card title="Projects" value={counts.projects} loading={loading} tone="indigo">
-          <Link to="/dashboard/projects" className="text-sm text-indigo-100 hover:underline">Manage projects</Link>
+    <div className="space-y-8 animate-fade-in">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card title="Projects" value={counts.projects} loading={loading} tone="indigo" delay="0">
+          <Link to="/dashboard/projects" className="inline-flex items-center text-xs font-medium text-indigo-200 hover:text-white transition-colors group">
+            Manage projects <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
+          </Link>
         </Card>
-        <Card title="Skills" value={counts.skills} loading={loading} tone="emerald">
-          <Link to="/dashboard/skills" className="text-sm text-emerald-100 hover:underline">Edit skills</Link>
+        <Card title="Skills" value={counts.skills} loading={loading} tone="emerald" delay="100">
+          <Link to="/dashboard/skills" className="inline-flex items-center text-xs font-medium text-emerald-200 hover:text-white transition-colors group">
+            Edit skills <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
+          </Link>
         </Card>
-        <Card title="Technologies" value={counts.technologies} loading={loading} tone="violet">
-          <Link to="/dashboard/skills" className="text-sm text-violet-100 hover:underline">Edit technologies</Link>
+        <Card title="Technologies" value={counts.technologies} loading={loading} tone="violet" delay="200">
+          <Link to="/dashboard/skills" className="inline-flex items-center text-xs font-medium text-violet-200 hover:text-white transition-colors group">
+            Edit technologies <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
+          </Link>
         </Card>
-        <Card title="Profile" value={counts.profile} loading={loading} tone="amber">
-          <Link to="/dashboard/profile" className="text-sm text-amber-100 hover:underline">Edit profile</Link>
+        <Card title="Profile" value={counts.profile} loading={loading} tone="amber" delay="300">
+          <Link to="/dashboard/profile" className="inline-flex items-center text-xs font-medium text-amber-200 hover:text-white transition-colors group">
+            Edit profile <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
+          </Link>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="p-4 rounded bg-gradient-to-br from-slate-800/60 to-slate-900/60 shadow-lg ring-1 ring-slate-700/40">
-            <h4 className="font-semibold mb-3 text-slate-100">Recent Projects</h4>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-2xl p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <h4 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <span className="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
+                Recent Projects
+              </h4>
+              <Link to="/dashboard/projects" className="text-xs font-medium text-slate-400 hover:text-white transition-colors">View All</Link>
+            </div>
+
             {loading ? (
-              <div className="text-sm text-slate-300">Loading…</div>
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+              </div>
             ) : recentProjects.length === 0 ? (
-              <div className="text-sm text-slate-400">No projects yet. Create one to populate this list.</div>
+              <div className="text-center py-12 text-slate-500 bg-slate-800/20 rounded-xl border border-dashed border-slate-700/50">
+                <p>No projects yet.</p>
+                <Link to="/dashboard/projects" className="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block">Create your first project</Link>
+              </div>
             ) : (
-              <ul className="space-y-3">
-                {recentProjects.map(p => (
-                  <li key={p.id} className="flex items-center justify-between bg-slate-900/30 p-3 rounded hover:translate-y-0.5 transition-transform">
-                    <div>
-                      <div className="font-medium text-slate-100">{p.name || 'Untitled project'}</div>
-                      <div className="text-sm text-slate-300">{p.url || p.description || ''}</div>
+              <div className="space-y-3">
+                {recentProjects.map((p, i) => (
+                  <div key={p.id} className="group flex items-center justify-between bg-slate-800/40 border border-white/5 p-4 rounded-xl hover:bg-slate-800/60 transition-all duration-300 hover:border-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-0.5" style={{ animationDelay: `${i * 100}ms` }}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform">
+                        {iconFolder()}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-slate-200 group-hover:text-white transition-colors">{p.name || 'Untitled project'}</div>
+                        <div className="text-xs text-slate-400 truncate max-w-[200px] sm:max-w-xs">{p.url || p.description || 'No description'}</div>
+                      </div>
                     </div>
-                    <Link to={`/dashboard/projects`} className="text-indigo-300 text-sm hover:underline">View all</Link>
-                  </li>
+                    <Link to={`/dashboard/projects`} className="opacity-0 group-hover:opacity-100 p-2 text-slate-400 hover:text-white transition-all bg-white/5 rounded-lg">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
         </div>
 
         <div>
-          <div className="p-4 rounded bg-gradient-to-br from-indigo-700 to-indigo-900 shadow-lg">
-            <h4 className="font-semibold text-white">Quick Actions</h4>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <QuickAction to="/dashboard/profile" label="Edit Profile">{iconUser()}</QuickAction>
-              <QuickAction to="/dashboard/projects" label="Add Project">{iconPlus()}</QuickAction>
-              <QuickAction to="/dashboard/skills" label="Manage Skills">{iconSpark()}</QuickAction>
-              <QuickAction to="/dashboard/theme" label="Theme">{iconPalette()}</QuickAction>
+          <div className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl sticky top-32">
+            <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-pink-500 rounded-full"></span>
+              Quick Actions
+            </h4>
+            <div className="grid grid-cols-2 gap-3">
+              <QuickAction to="/dashboard/profile" label="Edit Profile" color="hover:border-purple-500/50 hover:bg-purple-500/10">{iconUser()}</QuickAction>
+              <QuickAction to="/dashboard/projects" label="Add Project" color="hover:border-blue-500/50 hover:bg-blue-500/10">{iconPlus()}</QuickAction>
+              <QuickAction to="/dashboard/skills" label="Manage Skills" color="hover:border-emerald-500/50 hover:bg-emerald-500/10">{iconSpark()}</QuickAction>
+              <QuickAction to="/dashboard/theme" label="Theme" color="hover:border-amber-500/50 hover:bg-amber-500/10">{iconPalette()}</QuickAction>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <div className="bg-slate-900/40 rounded-xl p-4 border border-white/5">
+                <div className="text-xs text-indigo-200 font-medium mb-1">PRO TIP</div>
+                <p className="text-xs text-slate-400 leading-relaxed">Customize your portfolio theme in the Theme tab to match your personal brand.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -123,34 +162,48 @@ export default function DashboardOverview() {
   )
 }
 
-function Card({ title, value, children, loading, tone = 'slate' }) {
-  const toneBg = {
-    indigo: 'from-indigo-600 to-indigo-800',
-    emerald: 'from-emerald-500 to-emerald-700',
-    violet: 'from-violet-600 to-violet-800',
-    amber: 'from-amber-500 to-amber-700',
-    slate: 'from-slate-700 to-slate-900',
+function Card({ title, value, children, loading, tone = 'slate', delay }) {
+  const tones = {
+    indigo: 'from-indigo-500/10 to-indigo-600/5 border-indigo-500/20 text-indigo-400',
+    emerald: 'from-emerald-500/10 to-emerald-600/5 border-emerald-500/20 text-emerald-400',
+    violet: 'from-violet-500/10 to-violet-600/5 border-violet-500/20 text-violet-400',
+    amber: 'from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-400',
+    slate: 'from-slate-700/50 to-slate-800/50 border-slate-600/50 text-slate-300',
   }[tone]
 
   return (
-    <div className={`rounded p-4 bg-gradient-to-br ${toneBg} text-white shadow-md ring-1 ring-white/5` }>
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="text-sm opacity-90">{title}</div>
-          <div className="mt-2 text-2xl font-bold">{loading ? '—' : value}</div>
-        </div>
-        <div className="opacity-80">{cardIconFor(title)}</div>
+    <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${tones} border backdrop-blur-sm shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-indigo-500/10 group animate-slide-up`} style={{ animationDelay: `${delay}ms` }}>
+      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:rotate-12 group-hover:scale-110 duration-500">
+        <div className="scale-150">{cardIconFor(title)}</div>
       </div>
-      <div className="mt-3 text-sm opacity-90">{children}</div>
+
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-sm font-medium opacity-80 uppercase tracking-wider">{title}</div>
+          <div className="p-2 rounded-lg bg-white/5 border border-white/5 backdrop-blur-md">
+            {React.cloneElement(cardIconFor(title), { className: "w-5 h-5" })}
+          </div>
+        </div>
+
+        <div className="text-4xl font-bold text-white mb-4 tracking-tight">
+          {loading ? <span className="animate-pulse">...</span> : value}
+        </div>
+
+        <div className="pt-4 border-t border-white/5">
+          {children}
+        </div>
+      </div>
     </div>
   )
 }
 
-function QuickAction({ to, children, label }) {
+function QuickAction({ to, children, label, color }) {
   return (
-    <Link to={to} className="flex items-center space-x-3 p-2 rounded bg-white/6 hover:bg-white/10 transition">
-      <div className="w-8 h-8 flex items-center justify-center text-white/90">{children}</div>
-      <div className="text-sm text-white">{label}</div>
+    <Link to={to} className={`flex flex-col items-center justify-center p-4 rounded-xl bg-slate-800/40 border border-white/5 backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group ${color}`}>
+      <div className="w-10 h-10 mb-3 rounded-full bg-white/5 flex items-center justify-center text-slate-300 group-hover:text-white group-hover:bg-white/10 transition-colors">
+        {React.cloneElement(children, { className: "w-5 h-5" })}
+      </div>
+      <div className="text-xs font-semibold text-slate-300 group-hover:text-white text-center">{label}</div>
     </Link>
   )
 }
@@ -164,7 +217,7 @@ function cardIconFor(title) {
 
 function iconFolder() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 opacity-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7a2 2 0 012-2h3l2 2h7a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
     </svg>
   )
@@ -189,7 +242,7 @@ function iconPlus() {
 function iconSpark() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   )
 }
@@ -197,7 +250,7 @@ function iconSpark() {
 function iconPalette() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3a9 9 0 100 18 3 3 0 013-3h1a2 2 0 000-4h-1a3 3 0 01-3-3V3z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
     </svg>
   )
 }
@@ -205,7 +258,7 @@ function iconPalette() {
 function iconCube() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
     </svg>
   )
 }
