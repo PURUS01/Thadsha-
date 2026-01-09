@@ -146,9 +146,9 @@ export default function SkillsManager() {
             <span className="text-xs text-slate-400 px-2 py-1 bg-white/5 rounded-full border border-white/5">{skills.length} Items</span>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <input
-              className="flex-1 bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600 disabled:opacity-50"
+              className="flex-1 bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600 disabled:opacity-50 min-w-0"
               value={val}
               onChange={e => setVal(e.target.value)}
               placeholder="e.g. React.js, Node.js"
@@ -157,7 +157,7 @@ export default function SkillsManager() {
             <button
               onClick={add}
               disabled={loading || !val}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 rounded-xl font-medium transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 sm:py-0 rounded-xl font-medium transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center whitespace-nowrap"
             >
               {loading && (val || editingSkillId) ? <div className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full mr-2" /> : null}
               {editingSkillId ? 'Update' : 'Add'}
@@ -196,9 +196,9 @@ export default function SkillsManager() {
             <span className="text-xs text-slate-400 px-2 py-1 bg-white/5 rounded-full border border-white/5">{technologies.length} Items</span>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <input
-              className="flex-1 bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all placeholder:text-slate-600 disabled:opacity-50"
+              className="flex-1 bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all placeholder:text-slate-600 disabled:opacity-50 min-w-0"
               value={techName}
               onChange={e => setTechName(e.target.value)}
               placeholder="e.g. VS Code, Git, Figma"
@@ -207,7 +207,7 @@ export default function SkillsManager() {
             <button
               onClick={addTech}
               disabled={loading || !techName}
-              className="bg-cyan-600 hover:bg-cyan-500 text-white px-6 rounded-xl font-medium transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-3 sm:py-0 rounded-xl font-medium transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center whitespace-nowrap"
             >
               {loading && (techName || editingTechId) ? <div className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full mr-2" /> : null}
               {editingTechId ? 'Update' : 'Add'}
