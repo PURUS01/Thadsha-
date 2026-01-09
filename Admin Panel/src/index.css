@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+/* Simple gradient background */
+body {
+  @apply bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-700 text-slate-100;
+}
