@@ -4,8 +4,10 @@ import { Send, Mail, MapPin, Linkedin, Github } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import emailjs from '@emailjs/browser';
 import { toast, Toaster } from 'react-hot-toast';
+import { useTheme } from '../context/ThemeContext';
 
 const Contact = ({ profile }) => {
+    const theme = useTheme();
     const [sending, setSending] = useState(false);
     const [formState, setFormState] = useState({ name: '', email: '', message: '' });
 
@@ -38,7 +40,11 @@ const Contact = ({ profile }) => {
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#6366f1', '#a855f7', '#f43f5e']
+                colors: [
+                    theme?.primary || '#6366f1',
+                    theme?.secondary || '#a855f7',
+                    theme?.accent || '#f43f5e'
+                ]
             });
 
             toast.success("Message sent successfully!");
