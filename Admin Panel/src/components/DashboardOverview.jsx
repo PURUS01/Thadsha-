@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { isFirebaseConfigured, getDbInstance } from '../services/firebase'
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore'
+import { useAuth } from '../context/AuthContext'
 
 export default function DashboardOverview() {
-  const [counts, setCounts] = useState({ projects: 0, skills: 0, technologies: 0, profile: 0 })
+  const { user } = useAuth()
+  const [counts, setCounts] = useState({ projects: 0, skills: 0, technologies: 0 })
+  const [profile, setProfile] = useState(null)
   const [recentProjects, setRecentProjects] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -17,43 +20,51 @@ export default function DashboardOverview() {
       }
       try {
         const db = getDbInstance()
+        const pid = user?.uid || 'main'
 
-        // projects count & recent
+        // 1. Projects count & recent
         const projectsCol = collection(db, 'projects')
         const projSnap = await getDocs(projectsCol)
         const projDocs = projSnap.docs.map(d => ({ id: d.id, ...d.data() }))
 
-        // skills & technologies stored under skills_and_technologies
-        const satCol = collection(db, 'skills_and_technologies')
-        const satSnap = await getDocs(satCol)
-        let skillsCount = 0
-        let techCount = 0
-        satSnap.forEach(d => {
-          const id = d.id
-          const items = (d.data() && d.data().items) || {}
-          const size = Object.keys(items).length
-          if (id === 'skills') skillsCount = size
-          if (id === 'technologies') techCount = size
-        })
+        // 2. Skills count
+        const skillsCol = collection(db, 'skills')
+        const skillsSnap = await getDocs(skillsCol)
+        const skillsCount = skillsSnap.size
 
-        // profile document exists either under `profile/main`
-        const profileDoc = doc(db, 'profile', 'main')
+        // 3. Technologies count
+        const techCol = collection(db, 'technologies')
+        const techSnap = await getDocs(techCol)
+        const techCount = techSnap.size
+
+        // 4. Profile document
+        const profileDoc = doc(db, 'profile', pid)
         const profileSnap = await getDoc(profileDoc)
-        const profileExists = profileSnap.exists()
+        let profileData = profileSnap.exists() ? profileSnap.data() : null
+
+        // If not found under UID, try 'main' as fallback
+        if (!profileData && pid !== 'main') {
+          const fallbackSnap = await getDoc(doc(db, 'profile', 'main'))
+          if (fallbackSnap.exists()) profileData = fallbackSnap.data()
+        }
 
         if (!mounted) return
-        setCounts({ projects: projDocs.length, skills: skillsCount, technologies: techCount, profile: profileExists ? 1 : 0 })
+        setCounts({
+          projects: projDocs.length,
+          skills: skillsCount,
+          technologies: techCount
+        })
+        setProfile(profileData)
 
-        // recent projects: show up to 5 most recent by create time if present
-        let recent = projDocs.slice(0, 5)
-        if (projDocs.length > 1) {
-          recent = projDocs
-            .sort((a, b) => {
-              const ta = a.createdAt ? a.createdAt.seconds || 0 : 0
-              const tb = b.createdAt ? b.createdAt.seconds || 0 : 0
-              return tb - ta
-            })
-            .slice(0, 5)
+        // recent projects: show up to 5 most recent
+        let recent = [...projDocs]
+        if (recent.length > 0) {
+          recent.sort((a, b) => {
+            const ta = a.createdAt ? (a.createdAt.seconds || a.createdAt) : (isNaN(a.id) ? 0 : Number(a.id))
+            const tb = b.createdAt ? (b.createdAt.seconds || b.createdAt) : (isNaN(b.id) ? 0 : Number(b.id))
+            return tb - ta
+          })
+          recent = recent.slice(0, 5)
         }
         setRecentProjects(recent)
       } catch (err) {
@@ -64,7 +75,7 @@ export default function DashboardOverview() {
     }
     load()
     return () => (mounted = false)
-  }, [])
+  }, [user])
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -84,10 +95,34 @@ export default function DashboardOverview() {
             Edit technologies <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
           </Link>
         </Card>
-        <Card title="Profile" value={counts.profile} loading={loading} tone="amber" delay="300">
-          <Link to="/dashboard/profile" className="inline-flex items-center text-xs font-medium text-amber-200 hover:text-white transition-colors group">
-            Edit profile <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
-          </Link>
+        <Card title="Profile" loading={loading} tone="amber" delay="300" isProfile>
+          {profile ? (
+            <div className="space-y-2 mt-1">
+              <div className="text-xl font-bold text-white leading-tight">{profile.firstName} {profile.lastName}</div>
+              <div className="text-xs font-medium text-amber-400 uppercase tracking-wider">{profile.position}</div>
+              <div className="pt-2 space-y-1">
+                <div className="flex items-center gap-2 text-[10px] text-amber-200/70">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  {profile.address || 'Location not set'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-amber-200/70">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  {profile.email || 'Email not set'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-amber-200/70">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  {profile.mobile || 'Phone not set'}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-white/50 text-sm py-4">No profile details found.</div>
+          )}
+          <div className="mt-4 pt-4 border-t border-white/5">
+            <Link to="/dashboard/profile" className="inline-flex items-center text-xs font-medium text-amber-200 hover:text-white transition-colors group">
+              Edit profile <span className="ml-1 group-hover:translate-x-0.5 transition-transform">→</span>
+            </Link>
+          </div>
         </Card>
       </div>
 
@@ -162,7 +197,7 @@ export default function DashboardOverview() {
   )
 }
 
-function Card({ title, value, children, loading, tone = 'slate', delay }) {
+function Card({ title, value, children, loading, tone = 'slate', delay, isProfile }) {
   const tones = {
     indigo: 'from-indigo-500/10 to-indigo-600/5 border-indigo-500/20 text-indigo-400',
     emerald: 'from-emerald-500/10 to-emerald-600/5 border-emerald-500/20 text-emerald-400',
@@ -185,11 +220,13 @@ function Card({ title, value, children, loading, tone = 'slate', delay }) {
           </div>
         </div>
 
-        <div className="text-4xl font-bold text-white mb-4 tracking-tight">
-          {loading ? <span className="animate-pulse">...</span> : value}
-        </div>
+        {!isProfile && (
+          <div className={`font-bold text-white mb-4 tracking-tight ${typeof value === 'string' && value.length > 10 ? 'text-xl' : 'text-4xl'}`}>
+            {loading ? <span className="animate-pulse">...</span> : value}
+          </div>
+        )}
 
-        <div className="pt-4 border-t border-white/5">
+        <div className={isProfile ? '' : 'pt-4 border-t border-white/5'}>
           {children}
         </div>
       </div>
