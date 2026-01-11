@@ -79,7 +79,6 @@ export default function ProjectsManager() {
       if (!init) {
         if (payload.imageURL) {
           toast.success('Image uploaded to Cloudinary but Firebase not configured — URL logged to console')
-          console.log('Cloudinary image URL (not saved to Firestore):', payload.imageURL)
         } else {
           toast.error('Firebase not configured. Cannot save project.')
         }

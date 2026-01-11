@@ -15,8 +15,8 @@ export default {
                 muted: 'var(--text-muted)',
             },
             fontFamily: {
-                sans: ['Plus Jakarta Sans', 'sans-serif'],
-                outfit: ['Outfit', 'sans-serif'],
+                sans: ['Georgia', 'serif'],
+                outfit: ['Montserrat', 'sans-serif'],
             },
         },
     },

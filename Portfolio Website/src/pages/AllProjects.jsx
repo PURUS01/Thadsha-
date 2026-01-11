@@ -18,7 +18,7 @@ const AllProjects = ({ projects, profile }) => {
                             <ArrowLeft size={16} /> Back to Home
                         </Link>
                         <h1 className="text-6xl md:text-8xl font-black text-white font-outfit tracking-tighter">
-                            Full <span className="text-gradient">Portfolio.</span>
+                            All <span className="text-gradient">Projects.</span>
                         </h1>
                         <p className="text-slate-400 text-xl max-w-2xl font-medium">
                             A complete archive of engineering solutions, architectural patterns, and digital products.
@@ -26,55 +26,67 @@ const AllProjects = ({ projects, profile }) => {
                     </div>
                     <div className="hidden lg:block">
                         <div className="px-6 py-3 glass rounded-2xl border-white/5">
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Total Architecture</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Total Projects</p>
                             <p className="text-3xl font-black text-white">{projects.length}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                     {projects.map((project, i) => (
                         <motion.div
                             key={project.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
-                            className="group relative h-[450px] rounded-[32px] overflow-hidden glass border-white/5 hover:border-primary/30 transition-all duration-500"
+                            whileHover={{
+                                y: -10,
+                                scale: 1.02,
+                                transition: { duration: 0.4, ease: "easeOut" }
+                            }}
+                            className="group relative aspect-square rounded-[32px] overflow-hidden glass border-white/5 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 cursor-pointer"
                         >
                             {/* Image */}
                             <div className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-700">
                                 <img
                                     src={project.imageURL || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"}
-                                    className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-[1.5s]"
+                                    className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-125 transition-all duration-[1.5s]"
                                     alt={project.name}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                             </div>
 
+                            {/* Light Sweep Effect */}
+                            <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+
                             {/* Content */}
-                            <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {(project.technologies || []).slice(0, 3).map((tech, idx) => (
-                                        <span key={idx} className="px-2 py-0.5 text-[8px] font-black uppercase tracking-widest bg-primary/20 border border-primary/20 rounded-full text-primary">
-                                            {tech.name || tech}
-                                        </span>
-                                    ))}
+                            <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-end">
+                                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {(project.technologies || []).slice(0, 3).map((tech, idx) => (
+                                            <span key={idx} className="px-2 py-0.5 text-[8px] font-black uppercase tracking-widest bg-primary/20 border border-primary/20 rounded-full text-primary">
+                                                {tech.name || tech}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <h3 className="text-lg md:text-xl font-black text-white mb-1 font-outfit leading-tight">{project.name}</h3>
+                                    <p className="text-slate-400 text-xs line-clamp-1 mb-4 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        {project.description || "Complex engineering solution built with modern architectural patterns."}
+                                    </p>
+                                    {project.url && (
+                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                            <a
+                                                href={project.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-flex items-center justify-center w-fit px-6 py-3 bg-white text-black font-black uppercase tracking-widest text-[9px] rounded-xl hover:bg-primary hover:text-white transition-all shadow-xl"
+                                            >
+                                                Inspect <ExternalLink size={12} className="ml-2" />
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
-                                <h3 className="text-2xl font-black text-white mb-2 font-outfit">{project.name}</h3>
-                                <p className="text-slate-400 text-sm line-clamp-2 mb-6 font-medium">
-                                    {project.description || "Complex engineering solution built with modern architectural patterns."}
-                                </p>
-                                {project.url && (
-                                    <a
-                                        href={project.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center justify-center w-fit px-6 py-3 bg-white text-black font-black uppercase tracking-widest text-[9px] rounded-xl hover:bg-primary hover:text-white transition-all shadow-xl"
-                                    >
-                                        Inspect <ExternalLink size={12} className="ml-2" />
-                                    </a>
-                                )}
                             </div>
                         </motion.div>
                     ))}

@@ -11,7 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast'
 
 export default function App() {
-  React.useEffect(() => { console.log('App: mounted') }, [])
+  React.useEffect(() => { }, [])
   return (
     <div>
       <Toaster toastOptions={{ duration: 2000, style: { background: '#334155', color: '#fff' } }} />

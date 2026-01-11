@@ -19,6 +19,9 @@ export default function ProfileManager() {
   const [photoFile, setPhotoFile] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
   const [docId, setDocId] = useState('main')
+  const [resumeFile, setResumeFile] = useState(null)
+  const [resumePreview, setResumePreview] = useState(null)
+  const [resumeName, setResumeName] = useState('')
 
   const fetch = async () => {
     if (!isFirebaseConfigured()) return
@@ -39,6 +42,8 @@ export default function ProfileManager() {
         setDob(data.dob || '')
         setAbout(data.about || '')
         setPhotoPreview(data.photoURL || null)
+        setResumePreview(data.resumeURL || null)
+        setResumeName(data.resumeName || '')
       }
     } catch (err) {
       console.error('Failed to fetch profile', err)
@@ -59,6 +64,9 @@ export default function ProfileManager() {
     if (photoPreview && photoPreview.startsWith('blob:')) { URL.revokeObjectURL(photoPreview) }
     setPhotoFile(null)
     setPhotoPreview(null)
+    setResumeFile(null)
+    setResumePreview(null)
+    setResumeName('')
   }
 
   const removeSelectedImage = () => {
@@ -90,13 +98,27 @@ export default function ProfileManager() {
         }
       }
 
+      // upload resume to Cloudinary (if provided)
+      let uploadedResume = null
+      if (resumeFile) {
+        try {
+          uploadedResume = await uploadToCloudinary(resumeFile)
+          if (uploadedResume && uploadedResume.secure_url) {
+            payload.resumeURL = uploadedResume.secure_url
+            payload.resumeName = resumeFile.name
+          }
+        } catch (err) {
+          console.warn('Resume upload failed', err)
+          toast.error('Resume upload failed')
+        }
+      }
+
       // try to init Firebase and persist
       const init = initFirebase()
       if (!init) {
         // Firebase not configured: surface the Cloudinary URL so user can copy/use it
         if (payload.photoURL) {
           toast.success('Image uploaded to Cloudinary but Firebase not configured — URL copied to console')
-          console.log('Cloudinary image URL (not saved to Firestore):', payload.photoURL)
         } else {
           toast.error('Firebase not configured. Cannot save profile.')
         }
@@ -325,6 +347,60 @@ export default function ProfileManager() {
                   />
                   <p className="mt-2 text-xs text-slate-500">
                     Supports JPG, PNG and WEBP. Recommended size: 500x500px.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Resume Upload - New Section */}
+            <div className="md:col-span-2 pt-4 border-t border-white/5 mt-4">
+              <label className="text-xs font-medium text-slate-400 uppercase tracking-wider block mb-3">Curriculum Vitae (PDF)</label>
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center p-4 bg-slate-800/30 rounded-xl border border-dashed border-slate-600/50">
+                <div className="relative group shrink-0">
+                  <div className="w-16 h-16 bg-slate-700/50 rounded-xl flex items-center justify-center border-2 border-slate-600 group-hover:border-indigo-500 transition-colors shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 011.414.586l4 4a1 1 0 01.586 1.414V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="flex-1 w-full">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={e => {
+                      const f = e.target.files?.[0]
+                      if (!f) return
+                      setResumeFile(f)
+                      setResumeName(f.name)
+                    }}
+                    className="block w-full text-sm text-slate-400
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-500 file:text-white
+                        hover:file:bg-indigo-600
+                        cursor-pointer transition-all
+                      "
+                  />
+                  {resumePreview && !resumeFile && (
+                    <div className="mt-2 text-sm text-indigo-400 flex items-center gap-2">
+                      <span className="text-slate-500">Current:</span>
+                      <a href={resumePreview} target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-300 transition-colors flex items-center gap-1">
+                        {resumeName || 'View PDF'}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                  {resumeFile && (
+                    <div className="mt-2 text-xs font-medium text-emerald-400">
+                      Selected: {resumeFile.name}
+                    </div>
+                  )}
+                  <p className="mt-2 text-xs text-slate-500">
+                    Upload your CV/Resume in PDF format.
                   </p>
                 </div>
               </div>

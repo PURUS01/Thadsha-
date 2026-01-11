@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Cpu, Globe, Database, Layers, Code2, Zap } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Skills = ({ skills, technologies }) => {
+    const theme = useTheme();
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -27,21 +29,19 @@ const Skills = ({ skills, technologies }) => {
         }
     };
 
+    // Item animation variants
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: "spring",
-                stiffness: 100,
-                damping: 12
-            }
-        }
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0 }
     };
 
     return (
         <section ref={containerRef} id="skills" className="py-16 md:py-20 lg:py-24 relative overflow-hidden px-4 md:px-6">
+            {/* Theme Background Glow */}
+            <div
+                className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full blur-[150px] opacity-10 -z-10 transition-all duration-1000"
+                style={{ backgroundColor: theme?.primary || '#6366f1' }}
+            />
             <div className="container mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

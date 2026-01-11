@@ -23,11 +23,6 @@ export const ThemeProvider = ({ children }) => {
                     root.style.setProperty('--secondary', palette.secondary || palette.primary);
                     root.style.setProperty('--accent', palette.accent || palette.primary);
 
-                    console.log('🎨 Theme colors applied:', {
-                        primary: palette.primary,
-                        secondary: palette.secondary || palette.primary,
-                        accent: palette.accent || palette.primary
-                    });
                 }
             }
         });

@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 const Hero = ({ profile }) => {
+    const theme = useTheme();
     const containerRef = useRef(null);
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -60,10 +62,10 @@ const Hero = ({ profile }) => {
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] md:w-[60vw] h-[80vw] md:h-[60vw] bg-primary rounded-full blur-[120px] md:blur-[180px] -z-10"
             />
 
-            <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center relative z-10">
+            <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 lg:gap-8 items-center relative z-10">
                 <motion.div
                     style={{ y: yText, opacity: opacityHero, rotateX: tiltX, rotateY: tiltY }}
-                    className="space-y-6 md:space-y-8 lg:space-y-10 perspective-1000 order-2 lg:order-1"
+                    className="lg:col-span-7 space-y-6 md:space-y-8 lg:space-y-10 perspective-1000 order-2 lg:order-1"
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -86,19 +88,56 @@ const Hero = ({ profile }) => {
 
                     <div className="space-y-3 md:space-y-4">
                         <motion.h1
-                            initial={{ opacity: 0, x: -50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tight leading-[0.85] font-outfit text-white"
+                            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter leading-[1.1] font-outfit text-white mb-6"
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                                hidden: { opacity: 0 },
+                                visible: {
+                                    opacity: 1,
+                                    transition: { staggerChildren: 0.05, delayChildren: 0.2 }
+                                }
+                            }}
                         >
-                            {profile?.firstName || 'Thadsha'} <br />
-                            <span className="text-gradient drop-shadow-2xl">{profile?.lastName || ''}</span>
+                            {/* Render First Name */}
+                            <span className="block whitespace-nowrap">
+                                {(profile?.firstName || 'Thadsha').split('').map((char, index) => (
+                                    <motion.span
+                                        key={index}
+                                        className="inline-block"
+                                        variants={{
+                                            hidden: { opacity: 0, y: 50, rotateX: -90 },
+                                            visible: { opacity: 1, y: 0, rotateX: 0 }
+                                        }}
+                                        transition={{ type: "spring", damping: 12, stiffness: 200 }}
+                                    >
+                                        {char === ' ' ? '\u00A0' : char}
+                                    </motion.span>
+                                ))}
+                            </span>
+
+                            {/* Render Last Name */}
+                            <span className="block text-gradient drop-shadow-2xl mt-1 md:mt-2 whitespace-nowrap">
+                                {(profile?.lastName || '').split('').map((char, index) => (
+                                    <motion.span
+                                        key={index}
+                                        className="inline-block"
+                                        variants={{
+                                            hidden: { opacity: 0, y: 50, rotateX: -90 },
+                                            visible: { opacity: 1, y: 0, rotateX: 0 }
+                                        }}
+                                        transition={{ type: "spring", damping: 12, stiffness: 200 }}
+                                    >
+                                        {char === ' ' ? '\u00A0' : char}
+                                    </motion.span>
+                                ))}
+                            </span>
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.6 }}
                             transition={{ delay: 0.4 }}
-                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-primary"
+                            className="text-sm sm:text-base md:text-lg lg:text-xl font-bold uppercase tracking-[0.3em] text-primary"
                         >
                             {profile?.position || 'Software Engineer'}
                         </motion.p>
@@ -131,25 +170,58 @@ const Hero = ({ profile }) => {
 
                 <motion.div
                     style={{ opacity: opacityHero, rotateX: tiltX, rotateY: tiltY, scale: 1.05 }}
-                    className="hidden lg:block relative order-1 lg:order-2"
+                    className="hidden lg:block lg:col-span-5 relative order-1 lg:order-2"
                 >
-                    <div className="relative z-10 p-12 lg:p-16 glass-heavy rounded-[60px] lg:rounded-[80px] border-white/10 shadow-premium aspect-square flex flex-col justify-center items-center group overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 opacity-40 group-hover:scale-110 transition-transform duration-1000" />
+                    {/* Simple Elegant Circles */}
+                    <div className="relative w-full aspect-square flex items-center justify-center pointer-events-none">
+                        {/* Soft background glow */}
+                        <div
+                            className="absolute w-96 h-96 rounded-full blur-[120px] opacity-20 transition-all duration-1000"
+                            style={{ backgroundColor: theme?.primary || '#6366f1' }}
+                        />
 
-                        {/* Kinetic Architecture Visual */}
-                        <div className="relative w-full h-full flex items-center justify-center">
-                            <div className="absolute w-[120%] h-[120%] border border-white/[0.03] rounded-full animate-spin-slow opacity-20" />
-                            <div className="absolute w-[80%] h-[80%] border border-white/[0.05] rounded-full animate-reverse-spin-slow opacity-10" />
-
+                        {/* Concentric Circles */}
+                        <div className="relative w-96 h-96 flex items-center justify-center">
+                            {/* Outer Circle */}
                             <motion.div
-                                animate={{ y: [0, -20, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                                className="z-20 flex flex-col items-center gap-4 lg:gap-6"
-                            >
-                                <div className="text-7xl lg:text-9xl font-black text-white/10 font-outfit uppercase">CODE</div>
-                                <div className="w-1 h-16 lg:h-24 bg-gradient-to-b from-primary to-transparent" />
-                                <div className="text-2xl lg:text-4xl font-light text-white font-outfit tracking-[0.8em] lg:tracking-[1em] opacity-40">ARCHITECTURE</div>
-                            </motion.div>
+                                animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute w-80 h-80 rounded-full border-2 transition-all duration-700"
+                                style={{ borderColor: `${theme?.primary || '#6366f1'}40` }}
+                            />
+
+                            {/* Middle Circle */}
+                            <motion.div
+                                animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.6, 0.4] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                                className="absolute w-56 h-56 rounded-full border-2 transition-all duration-700"
+                                style={{ borderColor: `${theme?.secondary || '#a855f7'}50` }}
+                            />
+
+                            {/* Inner Circle */}
+                            <motion.div
+                                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.7, 0.5] }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                className="absolute w-32 h-32 rounded-full border-2 transition-all duration-700"
+                                style={{ borderColor: `${theme?.accent || '#f43f5e'}60` }}
+                            />
+
+                            {/* Center Glow */}
+                            <motion.div
+                                animate={{ scale: [1, 1.2, 1], opacity: [0.6, 0.9, 0.6] }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                className="w-16 h-16 rounded-full blur-xl transition-all duration-700"
+                                style={{ backgroundColor: theme?.primary || '#6366f1' }}
+                            />
+
+                            {/* Center Dot */}
+                            <div
+                                className="absolute w-4 h-4 rounded-full transition-all duration-700"
+                                style={{
+                                    backgroundColor: theme?.primary || '#6366f1',
+                                    boxShadow: `0 0 20px ${theme?.primary || '#6366f1'}`
+                                }}
+                            />
                         </div>
                     </div>
                 </motion.div>
@@ -157,7 +229,10 @@ const Hero = ({ profile }) => {
 
             {/* Background Drifting Text - Hidden on mobile */}
             <motion.div
-                style={{ x: mouseX, opacity: 0.03 }}
+                style={{
+                    x: useTransform(scrollYProgress, [0, 1], [0, -400]),
+                    opacity: 0.03
+                }}
                 className="hidden md:block absolute bottom-20 left-0 text-[15vw] lg:text-[20vw] font-black text-white whitespace-nowrap pointer-events-none select-none overflow-hidden"
             >
                 ENGINEER ARCHITECT CREATOR
@@ -167,4 +242,3 @@ const Hero = ({ profile }) => {
 };
 
 export default Hero;
-

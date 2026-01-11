@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ profile }) => {
@@ -16,8 +16,8 @@ const Navbar = ({ profile }) => {
     }, []);
 
     const navLinks = [
+        { name: 'Home', href: '/' },
         { name: 'About', href: '/#about' },
-        { name: 'Skills', href: '/#skills' },
         { name: 'Projects', href: '/#projects' },
         { name: 'Contact', href: '/#contact' },
     ];
@@ -63,6 +63,17 @@ const Navbar = ({ profile }) => {
                                 {link.name}
                             </Link>
                         ))}
+                        {profile?.resumeURL && (
+                            <a
+                                href={profile.resumeURL}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-6 py-2.5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-white/10 transition-all flex items-center gap-2 group"
+                            >
+                                <span>Download CV</span>
+                                <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                            </a>
+                        )}
                         <Link
                             to="/#contact"
                             onClick={(e) => handleNavClick(e, '/#contact')}
@@ -99,6 +110,16 @@ const Navbar = ({ profile }) => {
                                     {link.name}
                                 </Link>
                             ))}
+                            {profile?.resumeURL && (
+                                <a
+                                    href={profile.resumeURL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-2xl font-black hover:text-primary transition-colors font-outfit text-white/50 hover:text-white flex items-center gap-3"
+                                >
+                                    Download CV <Download size={24} />
+                                </a>
+                            )}
                             <Link
                                 to="/#contact"
                                 onClick={(e) => handleNavClick(e, '/#contact')}

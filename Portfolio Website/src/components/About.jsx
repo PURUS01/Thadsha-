@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
-const About = ({ profile }) => {
+const About = ({ profile, skills, technologies }) => {
+    const theme = useTheme();
     const sectionRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
@@ -20,7 +22,12 @@ const About = ({ profile }) => {
     ];
 
     return (
-        <section ref={sectionRef} id="about" className="py-16 md:py-20 lg:py-24 relative px-4 md:px-6">
+        <section ref={sectionRef} id="about" className="py-16 md:py-20 lg:py-24 relative px-4 md:px-6 overflow-hidden">
+            {/* Theme Background Glow */}
+            <div
+                className="absolute top-1/2 left-1/4 w-[500px] h-[500px] rounded-full blur-[150px] opacity-10 -z-10 transition-all duration-1000"
+                style={{ backgroundColor: theme?.secondary || '#a855f7' }}
+            />
             <div className="container mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-14 lg:gap-16 items-center">
 
                 {/* Visual Side */}
@@ -62,7 +69,7 @@ const About = ({ profile }) => {
                             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-primary">Biography</span>
                         </div>
                         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white font-outfit tracking-tighter leading-none mb-6 md:mb-8 lg:mb-10">
-                            Designing <br /> <span className="text-gradient">Logic.</span>
+                            About <br /> <motion.span style={{ x: useTransform(scrollYProgress, [0, 1], [0, 100]) }} className="text-gradient inline-block">Me.</motion.span>
                         </h2>
 
                         <div className="space-y-4 md:space-y-6 text-slate-400 text-base md:text-lg lg:text-xl font-medium leading-relaxed max-w-2xl">
@@ -88,6 +95,78 @@ const About = ({ profile }) => {
                             </motion.div>
                         ))}
                     </div>
+
+                    {/* Skills Section */}
+                    {skills && skills.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="space-y-4"
+                        >
+                            <h3 className="text-lg md:text-xl font-bold text-white uppercase tracking-wider">Expertise & Skills</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {skills.map((skill, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        whileHover={{ scale: 1.05 }}
+                                        className="group px-4 py-2 glass rounded-full border border-white/10 cursor-pointer transition-all duration-300"
+                                        style={{
+                                            boxShadow: `0 0 0 rgba(0,0,0,0)`,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.boxShadow = `0 0 20px ${theme?.primary || '#6366f1'}66`;
+                                            e.currentTarget.style.borderColor = theme?.primary || '#6366f1';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+                                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                                        }}
+                                    >
+                                        <span className="text-xs md:text-sm font-semibold text-white/80 group-hover:text-white transition-colors">
+                                            {skill.name}
+                                        </span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Technologies Section */}
+                    {technologies && technologies.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="space-y-4"
+                        >
+                            <h3 className="text-lg md:text-xl font-bold text-white uppercase tracking-wider">Tech Stack</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {technologies.map((tech, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        whileHover={{ scale: 1.05 }}
+                                        className="group px-4 py-2 glass rounded-full border border-white/10 cursor-pointer transition-all duration-300"
+                                        style={{
+                                            boxShadow: `0 0 0 rgba(0,0,0,0)`,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.boxShadow = `0 0 20px ${theme?.secondary || '#a855f7'}66`;
+                                            e.currentTarget.style.borderColor = theme?.secondary || '#a855f7';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+                                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                                        }}
+                                    >
+                                        <span className="text-xs md:text-sm font-semibold text-white/80 group-hover:text-white transition-colors">
+                                            {tech.name}
+                                        </span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
             </div>
         </section>

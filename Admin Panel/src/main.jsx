@@ -6,7 +6,6 @@ import './index.css'
 import { AuthProvider } from './context/AuthContext'
 import ErrorBoundary from './components/ErrorBoundary'
 
-console.log('main: booting app')
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

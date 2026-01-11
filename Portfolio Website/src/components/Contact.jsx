@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Send, Mail, MapPin, Linkedin, Github } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import emailjs from '@emailjs/browser';
@@ -8,6 +8,13 @@ import { useTheme } from '../context/ThemeContext';
 
 const Contact = ({ profile }) => {
     const theme = useTheme();
+    const sectionRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    const glowScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.2, 0.8]);
     const [sending, setSending] = useState(false);
     const [formState, setFormState] = useState({ name: '', email: '', message: '' });
 
@@ -58,12 +65,13 @@ const Contact = ({ profile }) => {
     };
 
     return (
-        <section id="contact" className="py-24 relative overflow-hidden">
+        <section ref={sectionRef} id="contact" className="py-24 relative overflow-hidden">
             <Toaster position="bottom-right" reverseOrder={false} />
-            {/* Background Decorative Element */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 opacity-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] blur-[120px]" />
-            </div>
+            {/* Theme Background Glow */}
+            <motion.div
+                style={{ scale: glowScale, backgroundColor: theme?.secondary || '#a855f7' }}
+                className="absolute top-1/2 right-1/4 w-[650px] h-[650px] rounded-full blur-[150px] opacity-10 -z-10 transition-all duration-1000"
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 
@@ -75,10 +83,10 @@ const Contact = ({ profile }) => {
                         viewport={{ once: true }}
                     >
                         <div className="inline-block px-4 py-1.5 glass rounded-full mb-8">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Connectivity</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Get In Touch</span>
                         </div>
                         <h2 className="text-6xl md:text-8xl font-black text-white font-outfit tracking-tighter leading-none mb-10">
-                            Build <br /> <span className="text-gradient">Together.</span>
+                            Let's <br /> <span className="text-gradient">Connect.</span>
                         </h2>
                         <p className="text-slate-400 text-lg md:text-xl font-medium max-w-md leading-relaxed">
                             Have a technical challenge or a visionary project? Let's connect and architect something extraordinary.
