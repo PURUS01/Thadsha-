@@ -19,17 +19,36 @@ const Navbar = ({ profile }) => {
         { name: 'Home', href: '/' },
         { name: 'About', href: '/#about' },
         { name: 'Projects', href: '/#projects' },
-        { name: 'Contact', href: '/#contact' },
     ];
 
     const handleNavClick = (e, href) => {
         if (location.pathname !== '/') {
-            // Not on home page, let the default Link behavior or manual navigation handle it
-        } else if (href.startsWith('/#')) {
-            e.preventDefault();
-            const id = href.replace('/#', '');
-            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-            setIsOpen(false);
+            // Not on home page - navigate to home first, then handle hash if needed
+            if (href === '/') {
+                // Just navigate to home, let Link handle it
+                return;
+            } else if (href.startsWith('/#')) {
+                e.preventDefault();
+                navigate('/');
+                // Wait for navigation, then scroll to section
+                setTimeout(() => {
+                    const id = href.replace('/#', '');
+                    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+                setIsOpen(false);
+            }
+        } else {
+            // On home page
+            if (href === '/') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setIsOpen(false);
+            } else if (href.startsWith('/#')) {
+                e.preventDefault();
+                const id = href.replace('/#', '');
+                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                setIsOpen(false);
+            }
         }
     };
 
