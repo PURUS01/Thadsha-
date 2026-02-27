@@ -9,12 +9,15 @@ import ThemeManager from './pages/ThemeManager'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast'
+import AnimatedBackground from './components/AnimatedBackground'
 
 export default function App() {
   React.useEffect(() => { }, [])
   return (
-    <div>
+    <div className="relative min-h-screen">
+      <AnimatedBackground />
       <Toaster toastOptions={{ duration: 2000, style: { background: '#334155', color: '#fff' } }} />
+      <div className="relative z-10">
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
@@ -27,6 +30,7 @@ export default function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </div>
     </div>
   )
 }

@@ -10,6 +10,8 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import AllProjects from './pages/AllProjects';
+import AnimatedBackground from './components/AnimatedBackground';
+import SimpleCursor from './components/SimpleCursor';
 
 const Home = ({ profile, skills, technologies, projects }) => {
   return (
@@ -82,28 +84,10 @@ function App() {
 
   return (
     <ThemeProvider>
+      <SimpleCursor />
       <div className="relative min-h-screen selection:bg-primary selection:text-white">
-        {/* Animated Background Mesh */}
-        <div className="fixed inset-0 -z-50 overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-background" />
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, 90, 0],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-primary/10 rounded-full blur-[120px]"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, -90, 0],
-            }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[100px]"
-          />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay pointer-events-none" />
-        </div>
+        {/* Enhanced Animated Background */}
+        <AnimatedBackground />
 
         {location.pathname === '/' && (
           <motion.div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-secondary origin-left z-[60]" style={{ scaleX }} />
@@ -116,7 +100,7 @@ function App() {
           <Route path="/projects" element={<AllProjects projects={projects} profile={profile} />} />
         </Routes>
 
-        <footer className="py-20 text-center border-t border-white/5 mt-20">
+        <footer className="py-12 md:py-16 text-center mt-0">
           <p className="text-muted text-sm tracking-widest uppercase font-bold">
             &copy; {new Date().getFullYear()} {profile?.firstName} {profile?.lastName}. Crafted with Engineering Precision.
           </p>

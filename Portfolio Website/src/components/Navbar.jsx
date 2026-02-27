@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Download } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = ({ profile }) => {
@@ -35,11 +35,11 @@ const Navbar = ({ profile }) => {
 
     return (
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-4' : 'py-8'}`}>
-            <div className={`max-w-6xl mx-auto px-6 transition-all duration-500 ${scrolled ? 'glass rounded-3xl border-white/5 shadow-2xl py-3 mx-4 md:mx-auto' : 'bg-transparent'}`}>
+            <div className={`max-w-6xl mx-auto px-6 transition-all duration-500 ${scrolled ? 'glass rounded-3xl border-0 shadow-2xl py-3 mx-4 md:mx-auto' : 'bg-transparent'}`}>
                 <div className="flex justify-between items-center">
                     <Link
                         to="/"
-                        className="text-2xl font-black tracking-tighter cursor-pointer font-outfit"
+                        className="group text-2xl font-black tracking-tighter cursor-pointer font-outfit transition-all duration-300 hover:scale-105"
                         onClick={(e) => {
                             if (location.pathname === '/') {
                                 e.preventDefault();
@@ -47,8 +47,7 @@ const Navbar = ({ profile }) => {
                             }
                         }}
                     >
-                        <span className="text-gradient leading-none">{profile?.firstName || 'Thadsha'}</span>
-                        <span className="text-white opacity-40 leading-none">.</span>
+                        <span className="text-gradient leading-none transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(99,102,241,0.8)]">{profile?.firstName || 'Thadsha'}</span>
                     </Link>
 
                     {/* Desktop Nav */}
@@ -58,34 +57,30 @@ const Navbar = ({ profile }) => {
                                 key={link.name}
                                 to={link.href}
                                 onClick={(e) => handleNavClick(e, link.href)}
-                                className="text-[11px] font-black hover:text-primary transition-all uppercase tracking-[0.2em] text-slate-400 hover:scale-110 active:scale-95"
+                                className="group relative text-[11px] font-black hover:text-primary transition-all duration-300 uppercase tracking-[0.2em] text-slate-400 hover:scale-110 active:scale-95"
                             >
-                                {link.name}
+                                <span className="relative z-10">{link.name}</span>
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300 ease-out"></span>
                             </Link>
                         ))}
-                        {profile?.resumeURL && (
-                            <a
-                                href={profile.resumeURL}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-6 py-2.5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-white/10 transition-all flex items-center gap-2 group"
-                            >
-                                <span>Download CV</span>
-                                <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                            </a>
-                        )}
                         <Link
                             to="/#contact"
                             onClick={(e) => handleNavClick(e, '/#contact')}
-                            className="px-6 py-2.5 bg-white text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-primary hover:text-white transition-all shadow-lg hover:shadow-primary/20"
+                            className="group relative px-6 py-2.5 bg-white text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary/20 hover:shadow-2xl hover:scale-105 active:scale-95 overflow-hidden"
                         >
-                            Hire Me
+                            <span className="relative z-10">{'Hire Me'}</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                         </Link>
                     </div>
 
                     {/* Mobile Toggle */}
-                    <button className="md:hidden p-2 text-white" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X size={28} /> : <Menu size={28} />}
+                    <button className="group md:hidden p-2 text-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:scale-110 active:scale-95" onClick={() => setIsOpen(!isOpen)}>
+                        <motion.div
+                            animate={isOpen ? { rotate: 90 } : { rotate: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            {isOpen ? <X size={28} className="group-hover:text-primary transition-colors duration-300" /> : <Menu size={28} className="group-hover:text-primary transition-colors duration-300" />}
+                        </motion.div>
                     </button>
                 </div>
             </div>
@@ -97,7 +92,7 @@ const Navbar = ({ profile }) => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="md:hidden absolute top-full left-4 right-4 mt-2 glass rounded-[32px] border-white/10 overflow-hidden shadow-2xl"
+                        className="md:hidden absolute top-full left-4 right-4 mt-2 glass rounded-[32px] border-0 overflow-hidden shadow-2xl"
                     >
                         <div className="flex flex-col p-8 gap-6 items-center">
                             {navLinks.map((link) => (
@@ -105,27 +100,19 @@ const Navbar = ({ profile }) => {
                                     key={link.name}
                                     to={link.href}
                                     onClick={(e) => handleNavClick(e, link.href)}
-                                    className="text-2xl font-black hover:text-primary transition-colors font-outfit text-white/50 hover:text-white"
+                                    className="group relative text-2xl font-black hover:text-primary transition-all duration-300 font-outfit text-white/50 hover:text-white hover:scale-105 active:scale-95"
                                 >
-                                    {link.name}
+                                    <span className="relative z-10">{link.name}</span>
+                                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-1 bg-primary group-hover:w-full transition-all duration-300 rounded-full"></span>
                                 </Link>
                             ))}
-                            {profile?.resumeURL && (
-                                <a
-                                    href={profile.resumeURL}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-2xl font-black hover:text-primary transition-colors font-outfit text-white/50 hover:text-white flex items-center gap-3"
-                                >
-                                    Download CV <Download size={24} />
-                                </a>
-                            )}
                             <Link
                                 to="/#contact"
                                 onClick={(e) => handleNavClick(e, '/#contact')}
-                                className="w-full py-4 bg-primary text-white text-center font-bold rounded-2xl"
+                                className="group relative w-full py-4 bg-primary text-white text-center font-bold rounded-2xl overflow-hidden hover:bg-primary/90 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-primary/30"
                             >
-                                Hire Me
+                                <span className="relative z-10">{'Hire Me'}</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                             </Link>
                         </div>
                     </motion.div>

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { Download } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Hero = ({ profile }) => {
@@ -54,7 +55,7 @@ const Hero = ({ profile }) => {
         <div
             ref={containerRef}
             onMouseMove={handleMouseMove}
-            className="relative min-h-screen flex items-center pt-20 md:pt-24 pb-12 md:pb-0 overflow-hidden px-4 md:px-6"
+            className="relative min-h-screen flex items-center pt-20 md:pt-24 pb-0 overflow-hidden px-4 md:px-6"
         >
             {/* Dynamic Kinetic Background */}
             <motion.div
@@ -70,7 +71,7 @@ const Hero = ({ profile }) => {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center gap-3 md:gap-4 px-4 md:px-5 py-1.5 md:py-2 glass-heavy rounded-xl md:rounded-2xl border-white/10"
+                        className="inline-flex items-center gap-3 md:gap-4 px-4 md:px-5 py-1.5 md:py-2 glass-heavy rounded-xl md:rounded-2xl border-0"
                     >
                         <div className="flex gap-1">
                             {[1, 2, 3].map(i => (
@@ -147,7 +148,7 @@ const Hero = ({ profile }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.6 }}
-                        className="text-base md:text-lg text-slate-400 max-w-lg leading-relaxed font-medium border-l-2 border-primary/20 pl-6 md:pl-8 py-2"
+                        className="text-base md:text-lg text-slate-400 max-w-lg leading-relaxed font-medium pl-6 md:pl-8 py-2"
                     >
                         Developing high-performance software with elegant architectures and immersive digital experiences. I believe in the intersection of code and art.
                     </motion.p>
@@ -158,13 +159,23 @@ const Hero = ({ profile }) => {
                         transition={{ delay: 0.8 }}
                         className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-6 lg:gap-8 pt-4"
                     >
-                        <a href="#projects" className="group relative px-8 md:px-10 lg:px-12 py-4 md:py-5 lg:py-6 bg-white text-black font-black uppercase tracking-widest text-[9px] md:text-[10px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl transition-all hover:scale-105 active:scale-95 text-center">
-                            <span className="relative z-10">Inspect Projects</span>
-                            <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity" />
+                        <a href="#projects" className="group relative px-8 md:px-10 lg:px-12 py-4 md:py-5 lg:py-6 bg-white text-black font-black uppercase tracking-widest text-[9px] md:text-[10px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 text-center hover:shadow-primary/30">
+                            <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(0,0,0,0.3)]">Inspect Projects</span>
+                            <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                         </a>
-                        <a href="#contact" className="px-8 md:px-10 lg:px-12 py-4 md:py-5 lg:py-6 glass text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] rounded-2xl md:rounded-3xl border-white/5 hover:bg-white/5 transition-all text-center">
-                            Reach Out
-                        </a>
+                        {profile?.resumeURL && (
+                            <a 
+                                href={profile.resumeURL} 
+                                target="_blank"
+                                rel="noreferrer"
+                                className="group relative px-8 md:px-10 lg:px-12 py-4 md:py-5 lg:py-6 glass text-white font-black uppercase tracking-widest text-[9px] md:text-[10px] rounded-2xl md:rounded-3xl border-0 hover:bg-white/10 transition-all duration-300 text-center flex items-center justify-center gap-2 hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-primary/20 overflow-hidden"
+                            >
+                                <span className="relative z-10">Download CV</span>
+                                <Download size={14} className="relative z-10 group-hover:translate-y-1 group-hover:rotate-12 transition-all duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                            </a>
+                        )}
                     </motion.div>
                 </motion.div>
 
@@ -186,24 +197,21 @@ const Hero = ({ profile }) => {
                             <motion.div
                                 animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute w-80 h-80 rounded-full border-2 transition-all duration-700"
-                                style={{ borderColor: `${theme?.primary || '#6366f1'}40` }}
+                                className="absolute w-80 h-80 rounded-full border-0 transition-all duration-700"
                             />
 
                             {/* Middle Circle */}
                             <motion.div
                                 animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.6, 0.4] }}
                                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                                className="absolute w-56 h-56 rounded-full border-2 transition-all duration-700"
-                                style={{ borderColor: `${theme?.secondary || '#a855f7'}50` }}
+                                className="absolute w-56 h-56 rounded-full border-0 transition-all duration-700"
                             />
 
                             {/* Inner Circle */}
                             <motion.div
                                 animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.7, 0.5] }}
                                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                className="absolute w-32 h-32 rounded-full border-2 transition-all duration-700"
-                                style={{ borderColor: `${theme?.accent || '#f43f5e'}60` }}
+                                className="absolute w-32 h-32 rounded-full border-0 transition-all duration-700"
                             />
 
                             {/* Center Glow */}
